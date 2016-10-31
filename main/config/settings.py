@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     'import_export',
     'hijack',
+    'widget_tweaks',
     'users',
     'links',
 ]
