@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'debug_toolbar',
     'import_export',
+    'widget_tweaks',
     'hijack',
     'users',
     'links',
@@ -47,6 +48,13 @@ INSTALLED_APPS = [
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
+
+
+# Login / Logout Settings.
+
+LOGIN_REDIRECT_URL = 'index'
+
+LOGOUT_REDIRECT_URL = 'index'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

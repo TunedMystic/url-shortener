@@ -7,25 +7,30 @@ from .managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
     email = models.EmailField(
         _('email address'),
         unique=True,
         max_length=200
     )
+
     first_name = models.CharField(
         _('first name'),
         max_length=100,
         blank=True
     )
+
     last_name = models.CharField(
         _('last name'),
         max_length=100,
         blank=True
     )
+
     date_joined = models.DateTimeField(
         _('date joined'),
         default=timezone.now
     )
+
     is_active = models.BooleanField(
         _('active'),
         default=True,
@@ -34,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         )
     )
+
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
