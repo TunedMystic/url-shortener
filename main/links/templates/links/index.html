@@ -24,14 +24,17 @@ Shorten url
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <!-- <label for="{{ form.destination.id_for_label }}">{{ form.destination.label }}</label> -->
                         {% render_field form.destination class+='form-control' placeholder+='http://' %}
-                    <!-- <span class="error-text"></span> -->
-                    <!-- <span class="error-text">{{ form.destination.errors.as_text }}</span> -->
+                </div>
+
+                <div class="display-errors">
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success">shortify!</button>
+                    <button type="submit" class="btn btn-success">shorten url</button>
+                </div>
+
+                <div class="result">
                 </div>
             </form>
         </div>
@@ -40,36 +43,54 @@ Shorten url
 
 {% block scripts %}
 <script>
+    function clear_divs() {
+        // clear div contents for each div argument.
+        for(var i = 0; i < arguments.length; i++) {
+            arguments[i].empty();
+        }
+    }
+
     function shortened_url() {
-        var form = $(this);
+        var $form = $(this);
+        var $result_div = $('.result');
+        var $error_div = $('.display-errors');
 
         $.ajax({
-            url: form.attr('action'),
+            url: $form.attr('action'),
             type: 'POST',
             dataType: 'json',
-            data: form.serialize(),
+            data: $form.serialize(),
             success: function(data) {
                 console.log(data);
+
+                // clear results and error divs.
+                clear_divs($result_div, $error_div);
+
+                // display success data to main div.
                 var shortened_url = $("<h2></h2>").append(data.url);
-                shortened_url.appendTo(document.body);
+                shortened_url.appendTo($result_div);
             },
             error: function(data) {
                 console.log('Error!');
                 console.log(data);
                 window.data = data;
 
-                var $input = form.find('input[name="destination"]');
+                // clear results and error divs.
+                clear_divs($result_div, $error_div);
+
+                // get input element and add error style
+                var $input = $form.find('input[name="destination"]');
                 $input.addClass('has-error');
 
+                // get response.
                 var errors = data.responseJSON;
                 var keys = Object.keys(errors);
 
+                // display the error for each key of response object in 'display-errors' div.
                 keys.map(function(key) {
                     var $error_span = $("<span></span>").addClass('error-text').text(errors[key]);
-                    $error_span.appendTo($input.parent());
-                })
-
-
+                    $error_span.appendTo($error_div);
+                });
             }
         });
         return false;

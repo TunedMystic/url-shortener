@@ -19,6 +19,7 @@ def shorten_url(request, *args, **kwargs):
     if request.is_ajax():
         if form.is_valid():
             link = form.save(commit=False)
+
             if request.user.is_authenticated:
                 link.user = request.user
             link.save()
