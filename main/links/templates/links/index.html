@@ -69,6 +69,9 @@ Shorten url
                 // display success data to main div.
                 var shortened_url = $("<h2></h2>").append(data.url);
                 shortened_url.appendTo($result_div);
+
+                // reset the form.
+                $form[0].reset();
             },
             error: function(data) {
                 console.log('Error!');
