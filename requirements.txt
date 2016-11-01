@@ -2,3 +2,4 @@ Django==1.10.2
 django-debug-toolbar==1.6
 django-hijack==2.1.2
 django-import-export==0.5.1
+django-widget-tweaks==1.4.1
