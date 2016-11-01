@@ -61,7 +61,6 @@ Shorten url
             dataType: 'json',
             data: $form.serialize(),
             success: function(data) {
-                console.log(data);
 
                 // clear results and error divs.
                 clear_divs($result_div, $error_div);
@@ -74,10 +73,7 @@ Shorten url
                 $form[0].reset();
             },
             error: function(data) {
-                console.log('Error!');
-                console.log(data);
-                window.data = data;
-
+                
                 // clear results and error divs.
                 clear_divs($result_div, $error_div);
 
