@@ -92,3 +92,4 @@ ENV/
 # Misc
 *.sqlite3
 *.DS_Store
+misc/
