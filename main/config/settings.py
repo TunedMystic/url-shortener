@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'import_export',
     'widget_tweaks',
     'hijack',
-    'widget_tweaks',
     'users',
     'links',
 ]
