@@ -1,4 +1,4 @@
-{% extends 'links/base.html' %}
+{% extends 'base/base.html' %}
 {% load widget_tweaks %}
 
 {% block title %}
@@ -6,14 +6,15 @@ Shorten url
 {% endblock title %}
 
 {% block styles %}
-
-.error-text {
-    color: red;
-    font-weight: bold;
-}
-.has-error {
-    border-color: #d20505;
-}
+<style>
+    .error-text {
+        color: red;
+        font-weight: bold;
+    }
+    .has-error {
+        border-color: #d20505;
+    }
+</style>
 {% endblock styles %}
 
 {% block content %}
