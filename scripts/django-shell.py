@@ -1,4 +1,5 @@
 import os
+from os.path import abspath, dirname, join
 import sys
 
 import django
@@ -18,7 +19,10 @@ def print_header():
 
 
 if __name__ == '__main__':
-    sys.path.insert(0, os.path.abspath('/Users/sangeeta/Code/url-shortener/main'))
+    path = join(dirname(dirname(abspath(__file__))), 'main')
+    print('path: {}'.format(path))
+
+    sys.path.insert(0, abspath(path))
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
 
