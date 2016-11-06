@@ -41,22 +41,35 @@ HASH_LENGTH = 5
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Django-specific apps.
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Third party apps.
     'debug_toolbar',
     'import_export',
     'widget_tweaks',
+
+    # Project apps.
     'hijack',
     'users',
     'links',
 ]
 
 # Custom user model
+
 AUTH_USER_MODEL = 'users.User'
+
+
+# Site Id setting.
+
+SITE_ID = 1
 
 
 # Login / Logout Settings.

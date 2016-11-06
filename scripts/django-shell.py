@@ -26,6 +26,9 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
 
+    # Import Django modules.
+    from django.contrib.sites.models import Site
+
     # Import models.
     from users.models import *
     from links.models import *

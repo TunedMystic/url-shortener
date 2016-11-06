@@ -2,9 +2,10 @@
 
 from argparse import ArgumentParser
 import os
+from os.path import abspath, dirname, join
 import sys
 
-DB_NAME = 'db.sqlite3'
+DB_NAME = join(dirname(dirname(abspath(__file__))), 'db.sqlite3')
 DUMP = 'sqlite3 {} .dump > {}'
 RESTORE = 'sqlite3 {} < {}'
 
