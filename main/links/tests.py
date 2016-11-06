@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from users.models import User
@@ -8,6 +9,17 @@ from .models import Link
 
 class LinkTests(TestCase):
     fixtures = ['users', 'links']
+    site_domain = 'testexample.com'
+
+    def setUp(self):
+        '''
+        Modify the current site with the
+        predefined site domain.
+        '''
+        site = Site.objects.get_current()
+        site.domain = self.site_domain
+        site.name = self.site_domain
+        site.save()
 
     def test_link_form(self):
 
@@ -68,8 +80,8 @@ class LinkTests(TestCase):
         response = self.client.post(url, data=data)
 
         # Check the response status code and response data.
-        response_data = response.json()
         self.assertEqual(response.status_code, 200)
+        response_data = response.json()
         self.assertIn('url', response_data)
 
         link = Link.objects.get(key=response_data.get('url'))
@@ -93,10 +105,27 @@ class LinkTests(TestCase):
         response = self.client.post(url, data=data)
 
         # Check the response status code and response data.
-        response_data = response.json()
         self.assertEqual(response.status_code, 200)
+        response_data = response.json()
         self.assertIn('url', response_data)
 
         link = Link.objects.get(key=response_data.get('url'))
         # Check that the Link has an associated User.
         self.assertEqual(link.user, user)
+
+    def test_domain_link(self):
+        '''
+        Test the 'shorten-url' endpoint with a url
+        that has this site's domain.
+
+        This test should fail with a 400 error.
+        '''
+        url = reverse('shorten-url')
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://{}'.format(self.site_domain)}
+        response = self.client.post(url, data=data)
+
+        # Check the response status code and response data.
+        self.assertEqual(response.status_code, 400)
+
