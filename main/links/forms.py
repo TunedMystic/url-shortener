@@ -27,9 +27,9 @@ class LinkForm(forms.ModelForm):
         '''
         destination = self.cleaned_data.get('destination')
         url = urlparse(destination)
-        site = urlparse(Site.objects.get_current().domain)
+        site_domain = Site.objects.get_current().domain
 
-        if url.netloc == site.netloc:
+        if url.hostname == site_domain:
             raise forms.ValidationError('Sorry, this url is not allowed!')
 
         return destination
