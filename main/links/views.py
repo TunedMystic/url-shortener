@@ -10,23 +10,16 @@ def index(request):
     return render(request, 'links/index.html', {'form': form})
 
 
-@require_http_methods(["POST"])
-def shorten_url(request, *args, **kwargs):
+@require_http_methods(['POST'])
+def shorten_url(request):
     form = LinkForm(
         request.POST or None,
         user=request.user
     )
 
-    if request.is_ajax():
-        if form.is_valid():
-            link = form.save(commit=False)
-
-            data = {
-                'url': link.key
-            }
-            return JsonResponse(data, status=200)
-        else:
-            errors = form.errors
-            return JsonResponse(errors, status=400)
-
-    return render(request, 'links/index.html', {'form': form})
+    if form.is_valid():
+        link = form.save(commit=False)
+        return JsonResponse({'url': link.key}, status=200)
+    else:
+        errors = form.errors
+        return JsonResponse(errors, status=400)
