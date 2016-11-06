@@ -1,4 +1,7 @@
+from urllib.parse import urlparse
+
 from django import forms
+from django.contrib.sites.models import Site
 
 from .models import Link
 
@@ -9,10 +12,26 @@ class LinkForm(forms.ModelForm):
         self.fields['key'].required = False
 
     def clean_key(self):
+        '''
+        Raise validation if user enters an existing key.
+        '''
         key = self.cleaned_data.get('key')
         if key and Link.objects.filter(key=key).exists():
             raise forms.ValidationError('Custom link is already taken!')
         return key
+
+    def clean_destination(self):
+        '''
+        Raise validation if user enters a url that originates from this site.
+        '''
+        destination = self.cleaned_data.get('destination')
+        url = urlparse(destination)
+        site = urlparse(Site.objects.get_current().domain)
+
+        if url.netloc == site.netloc:
+            raise forms.ValidationError('Sorry, this url is not allowed!')
+
+        return destination
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(LinkForm, self).clean(*args, **kwargs)
