@@ -14,8 +14,10 @@ def index(request):
 
 @require_http_methods(["POST"])
 def shorten_url(request, *args, **kwargs):
-    form = LinkForm(request.POST or None)
-    form.request_user = request.user
+    form = LinkForm(
+        request.POST or None,
+        user=request.user
+    )
 
     if request.is_ajax():
         if form.is_valid():

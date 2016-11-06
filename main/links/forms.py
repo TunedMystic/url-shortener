@@ -8,6 +8,7 @@ from .models import Link
 
 class LinkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(LinkForm, self).__init__(*args, **kwargs)
         self.fields['key'].required = False
 
@@ -49,9 +50,9 @@ class LinkForm(forms.ModelForm):
         if not link.key:
             link.key = Link.make_key()
 
-        # Set user if user is authenticated
-        if self.request_user.is_authenticated:
-            link.user = self.request_user
+        # Set user if user is authenticated.
+        if self.user and self.user.is_authenticated:
+            link.user = self.user
 
         link.save()
         return link
