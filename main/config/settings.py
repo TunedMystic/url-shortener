@@ -31,6 +31,13 @@ ALLOWED_HOSTS = []
 INTERNAL_IPS = ['127.0.0.1']
 
 
+# Link Settings
+
+HASH_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+
+HASH_LENGTH = 5
+
+
 # Application definition
 
 INSTALLED_APPS = [

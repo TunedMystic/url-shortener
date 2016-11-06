@@ -1,5 +1,3 @@
-import uuid
-
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
@@ -15,17 +13,14 @@ def index(request):
 @require_http_methods(["POST"])
 def shorten_url(request, *args, **kwargs):
     form = LinkForm(request.POST or None)
+    form.request_user = request.user
 
     if request.is_ajax():
         if form.is_valid():
             link = form.save(commit=False)
 
-            if request.user.is_authenticated:
-                link.user = request.user
-            link.save()
-
             data = {
-                'url': uuid.uuid4().__str__().replace('-', '')
+                'url': link.key
             }
             return JsonResponse(data, status=200)
         else:

@@ -25,8 +25,14 @@ Shorten url
                 {% csrf_token %}
 
                 <div class="form-group">
-                        {% render_field form.destination class+='form-control' placeholder+='http://' %}
+                    {% render_field form.destination class+='form-control' placeholder+='http://' %}
                 </div>
+                
+                {% if user.is_authenticated %}
+                <div class="form-group">
+                    {% render_field form.key class+='form-control' placeholder+='custom link' %}
+                </div>
+                {% endif %}
 
                 <div class="display-errors">
                 </div>
