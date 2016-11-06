@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # Dump the database.
     if args.dump:
         cmd = DUMP.format(DB_NAME, args.filename)
-        write('Dumping database with:  {}\n'.format(cmd))
+        write('Dumping database with: {}\n'.format(cmd))
         os.system(cmd)
 
         sys.exit()
