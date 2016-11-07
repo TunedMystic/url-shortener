@@ -14,6 +14,7 @@ class LinkForm(forms.ModelForm):
 
     def clean_key(self):
         '''
+        Raise validation if key is given, but User is not given.
         Raise validation if user enters an existing key.
         '''
         user_not_exists = not self.user or not self.user.is_authenticated
