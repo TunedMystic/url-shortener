@@ -18,9 +18,9 @@ urlpatterns = [
         views.dashboard,
         name='dashboard'
     ),
-    # url(
-    #     r'^(?P<key>[\w-]+)/$',
-    #     views.redirect_url,
-    #     name='redirect-url'
-    # ),
+    url(
+        r'^(?P<key>[\w-]+)/$',
+        views.redirect_url,
+        name='redirect-url'
+    ),
 ]
