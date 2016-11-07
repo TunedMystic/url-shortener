@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.db.models import F
 from django.http import JsonResponse, HttpResponsePermanentRedirect
@@ -37,3 +38,14 @@ def redirect_url(request, key):
     link.save()
 
     return HttpResponsePermanentRedirect(link.destination)
+
+
+@login_required
+def dashboard(request):
+    links = Link.objects.filter(user=request.user)
+    domain = 'http://{}/'.format(Site.objects.get_current().domain)
+    return render(
+        request,
+        'links/dashboard.html',
+        {'links': links, 'domain': domain}
+    )

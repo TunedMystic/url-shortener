@@ -14,8 +14,13 @@ urlpatterns = [
         name='shorten-url'
     ),
     url(
-        r'^(?P<key>[\w-]+)/$',
-        views.redirect_url,
-        name='redirect-url'
+        r'^dashboard/$',
+        views.dashboard,
+        name='dashboard'
     ),
+    # url(
+    #     r'^(?P<key>[\w-]+)/$',
+    #     views.redirect_url,
+    #     name='redirect-url'
+    # ),
 ]

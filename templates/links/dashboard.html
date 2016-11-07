@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Dashboard
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th data-field="state" data-checkbox="true"></th>
+                        <th>Shortened Url</th>
+                        <th>Destination Link</th>
+                        <th>Total clicks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in links %}
+                        <tr>
+                            <td class="bs-checkbox">
+                                <input type="checkbox">
+                            </td>
+                            <td>{{ domain }}/{{ link.key }}</td>
+                            <td>{{ link.destination }}</td>
+                            <td>{{ link.total_clicks }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
