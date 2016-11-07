@@ -16,7 +16,15 @@ class LinkForm(forms.ModelForm):
         '''
         Raise validation if user enters an existing key.
         '''
+        user_not_exists = not self.user or not self.user.is_authenticated
         key = self.cleaned_data.get('key')
+
+        # If key is given and (user is None or
+        # user not authenticated), raise exception.
+        if key and user_not_exists:
+            raise forms.ValidationError('Only logged in users can define key.')
+
+        # If a key is given and an existing url has same key, raise exception.
         if key and Link.objects.filter(key=key).exists():
             raise forms.ValidationError('Custom link is already taken!')
         return key

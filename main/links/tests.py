@@ -129,3 +129,46 @@ class LinkTests(TestCase):
         # Check the response status code and response data.
         self.assertEqual(response.status_code, 400)
 
+    def test_anon_link_key(self):
+        '''
+        Test the 'shorten-url' endpoint with
+        a destination and key provided by an anonymous user.
+
+        This test should fail with a 400 error.
+        '''
+        url = reverse('shorten-url')
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website4.com', 'key': 'w4'}
+        response = self.client.post(url, data=data)
+
+        # Check the response status code and response data.
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_existing_key(self):
+        '''
+        Test the 'shorten-url' endpoint with
+        an existing key provided by a logged in user.
+
+        This test should fail with a 400 error.
+        '''
+        # Get the User and Login the User.
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        url = reverse('shorten-url')
+        key = 'w4'
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website4.com', 'key': key}
+        response = self.client.post(url, data=data)
+
+        # Check the response status code and response data.
+        self.assertEqual(response.status_code, 200)
+
+        # Prepare data with previous key and POST it.
+        data = {'destination': 'http://mysite4.com', 'key': key}
+        response = self.client.post(url, data=data)
+
+        # Check the response status code and response data.
+        self.assertEqual(response.status_code, 400)
