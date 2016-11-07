@@ -23,7 +23,11 @@ Dashboard
                             <td class="bs-checkbox">
                                 <input type="checkbox">
                             </td>
-                            <td>{{ domain }}{{ link.key }}</td>
+                            <td>
+                                <a href="{% url 'redirect-url' key=link.key %}" target="blank">
+                                    {% url 'redirect-url' key=link.key %}
+                                </a>
+                            </td>
                             <td>{{ link.destination }}</td>
                             <td>{{ link.total_clicks }}</td>
                         </tr>

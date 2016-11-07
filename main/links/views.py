@@ -43,9 +43,8 @@ def redirect_url(request, key):
 @login_required
 def dashboard(request):
     links = Link.objects.filter(user=request.user)
-    domain = 'http://{}/'.format(Site.objects.get_current().domain)
     return render(
         request,
         'links/dashboard.html',
-        {'links': links, 'domain': domain}
+        {'links': links}
     )
