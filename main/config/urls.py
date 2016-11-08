@@ -28,3 +28,29 @@ if settings.DEBUG:
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ]
+
+
+# root_urlconf = __import__(settings.ROOT_URLCONF)
+# patterns = root_urlconf.urls.urlpatterns
+
+
+def get_urls(raw_urls, nice_urls=[], urlbase=''):
+    from operator import itemgetter
+    for entry in raw_urls:
+        fullurl = (urlbase + entry.regex.pattern).replace('^', '')
+        if entry.callback:
+            nice_urls.append({"pattern": fullurl})
+        else:
+            get_urls(entry.url_patterns, nice_urls, fullurl)
+    nice_urls = sorted(nice_urls, key=itemgetter('pattern'))
+    return nice_urls
+
+# Parse urlconfigs.
+blacklist = get_urls(urlpatterns)
+blacklist = [d.get('pattern') for d in blacklist]
+blacklist = list(set([
+    s.split('/')[0]
+    for s in blacklist
+    if not s.startswith(('$', '(', '_'))]
+))
+settings.blacklist = blacklist
