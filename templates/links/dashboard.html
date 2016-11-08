@@ -15,6 +15,7 @@ Dashboard
                         <th>Shortened Url</th>
                         <th>Destination Link</th>
                         <th>Total clicks</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,11 @@ Dashboard
                             </td>
                             <td>{{ link.destination }}</td>
                             <td>{{ link.total_clicks }}</td>
+                            <td>
+                                <a href="{% url 'edit-url' key=link.key %}">
+                                    edit
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

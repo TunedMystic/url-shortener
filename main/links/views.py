@@ -2,10 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.db.models import F
 from django.http import JsonResponse, HttpResponsePermanentRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
-from .forms import LinkForm
+from .forms import LinkForm, LinkEditForm
 from .models import Link
 
 
@@ -48,3 +48,16 @@ def dashboard(request):
         'links/dashboard.html',
         {'links': links}
     )
+
+@login_required
+def edit_url(request, key):
+    link = Link.objects.get(key=key)
+    form = LinkEditForm(request.POST or None, instance=link)
+
+    if request.method == 'POST':
+        #import pdb; pdb.set_trace();
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('dashboard'))
+
+    return render(request, 'links/edit_url.html', {'form': form})

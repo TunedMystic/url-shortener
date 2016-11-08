@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit url
+{% endblock title %}
+
+{% block styles %}
+<style>
+    .error-text {
+        color: red;
+        font-weight: bold;
+    }
+    .has-error {
+        border-color: #d20505;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h2>Enter a URL</h2>
+            <form action="." method="POST" id="shorten-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {% render_field form.destination class+='form-control' placeholder+='http://' %}
+                </div>
+                
+                {% if user.is_authenticated %}
+                <div class="form-group">
+                    {% render_field form.key class+='form-control' placeholder+='custom link' %}
+                </div>
+                {% endif %}
+
+                <div class="display-errors">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">update url</button>
+                </div>
+
+                <div class="result">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
