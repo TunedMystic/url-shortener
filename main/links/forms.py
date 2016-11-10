@@ -71,7 +71,7 @@ class LinkForm(LinkFormMixin, forms.ModelForm):
         fields = ['destination', 'key']
 
 
-class LinkEditForm(forms.ModelForm):
+class LinkEditForm(LinkFormMixin, forms.ModelForm):
     class Meta:
         model = Link
         fields = ['destination']
