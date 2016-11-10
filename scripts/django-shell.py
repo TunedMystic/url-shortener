@@ -27,6 +27,7 @@ if __name__ == '__main__':
     django.setup()
 
     # Import Django modules.
+    from django.conf import settings
     from django.contrib.sites.models import Site
 
     # Import models.
