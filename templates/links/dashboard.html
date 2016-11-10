@@ -26,7 +26,7 @@ Dashboard
                             </td>
                             <td>
                                 <a href="{% url 'redirect-url' key=link.key %}" target="blank">
-                                    {% url 'redirect-url' key=link.key %}
+                                    http://{{ site.domain }}{% url 'redirect-url' key=link.key %}
                                 </a>
                             </td>
                             <td>{{ link.destination }}</td>
