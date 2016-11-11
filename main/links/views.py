@@ -37,7 +37,7 @@ def redirect_url(request, key):
     link.total_clicks = F('total_clicks') + 1
     link.save()
 
-    response = HttpResponse(status=303)
+    response = HttpResponse(status=302)
     response['Location'] = link.destination
     return response
 
