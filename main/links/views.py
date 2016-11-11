@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.db.models import F
-from django.http import JsonResponse, HttpResponsePermanentRedirect
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
@@ -37,7 +37,9 @@ def redirect_url(request, key):
     link.total_clicks = F('total_clicks') + 1
     link.save()
 
-    return HttpResponsePermanentRedirect(link.destination)
+    response = HttpResponse(status=303)
+    response['Location'] = link.destination
+    return response
 
 
 @login_required
