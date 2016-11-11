@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.template.loader import get_template
 from django.views.decorators.http import require_http_methods
 
 from .forms import LinkForm, LinkEditForm
@@ -37,7 +38,14 @@ def redirect_url(request, key):
     link.total_clicks = F('total_clicks') + 1
     link.save()
 
-    response = HttpResponse(status=302)
+    # Prepare template response.
+    template = get_template('links/redirect.html')
+    context = {
+        'site': Site.objects.get_current(),
+        'link': link
+    }
+
+    response = HttpResponse(template.render(context, request), status=302)
     response['Location'] = link.destination
     return response
 
