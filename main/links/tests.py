@@ -126,7 +126,7 @@ class LinkTests(TestCase):
         data = {'destination': 'http://{}'.format(self.site_domain)}
         response = self.client.post(url, data=data)
 
-        # Check the response status code and response data.
+        # Check the response status code.
         self.assertEqual(response.status_code, 400)
 
     def test_anon_link_key(self):
@@ -142,7 +142,7 @@ class LinkTests(TestCase):
         data = {'destination': 'http://website4.com', 'key': 'w4'}
         response = self.client.post(url, data=data)
 
-        # Check the response status code and response data.
+        # Check the response status code.
         self.assertEqual(response.status_code, 400)
 
     def test_user_existing_key(self):
@@ -170,5 +170,32 @@ class LinkTests(TestCase):
         data = {'destination': 'http://mysite4.com', 'key': key}
         response = self.client.post(url, data=data)
 
-        # Check the response status code and response data.
+        # Check the response status code.
         self.assertEqual(response.status_code, 400)
+
+    def test_redirect_status_code(self):
+        '''
+        Test the 'redirect-url' endpoint for 301 status code
+        and cache control header.
+        '''
+        # Get the User and Login the User.
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        # Shorten a url
+        url = reverse('shorten-url')
+        key = 'w5'
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website5.com', 'key': key}
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        # Prepare redirect url and GET it.
+        url = reverse('redirect-url', kwargs={'key': key})
+        response = self.client.get(url)
+
+        # Check the response status code and headers.
+        self.assertEqual(response.status_code, 301)
+        self.assertTrue(response.has_header('Cache-Control'), True)
+        self.assertTrue(response.has_header('Location'), True)
