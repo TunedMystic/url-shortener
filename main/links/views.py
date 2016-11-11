@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
 from .forms import LinkForm, LinkEditForm
@@ -37,8 +38,12 @@ def redirect_url(request, key):
     link.total_clicks = F('total_clicks') + 1
     link.save()
 
-    response = HttpResponse(status=302)
+    response = HttpResponse(status=301)
     response['Location'] = link.destination
+
+    # Set cache control to be private and to be contacted back after 60 seconds
+    patch_cache_control(response, private=True, max_age=60)
+
     return response
 
 
