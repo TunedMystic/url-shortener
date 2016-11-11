@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.db.models import F
@@ -50,7 +51,12 @@ def redirect_url(request, key):
     response['Location'] = link.destination
 
     # Set cache control to be private and to be contacted back after 60 seconds
-    patch_cache_control(response, private=True, max_age=60)
+    patch_cache_control(
+        response,
+        private=settings.CC_PRIVATE,
+        max_age=settings.CC_MAX_AGE
+    )
+
     return response
 
 

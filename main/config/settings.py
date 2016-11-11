@@ -38,6 +38,13 @@ HASH_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 HASH_LENGTH = 5
 
 
+# Cache Control Headers
+
+CC_MAX_AGE = 60
+
+CC_PRIVATE = True
+
+
 # Application definition
 
 INSTALLED_APPS = [
