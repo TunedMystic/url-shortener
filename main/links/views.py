@@ -51,7 +51,6 @@ def redirect_url(request, key):
 
     # Set cache control to be private and to be contacted back after 60 seconds
     patch_cache_control(response, private=True, max_age=60)
-
     return response
 
 
