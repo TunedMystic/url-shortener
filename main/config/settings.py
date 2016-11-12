@@ -40,9 +40,14 @@ HASH_LENGTH = 5
 
 # Cache Control Headers
 
-CC_MAX_AGE = 60
+CC_MAX_AGE = 2
 
 CC_PRIVATE = True
+
+
+# Request Log directory
+
+REQUEST_LOG_DIR = 'request_logs'
 
 
 # Application definition

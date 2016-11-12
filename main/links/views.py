@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
+from config.utils import dump_request
 from .forms import LinkForm, LinkEditForm
 from .models import Link
 
@@ -56,6 +57,7 @@ def redirect_url(request, key):
         private=settings.CC_PRIVATE,
         max_age=settings.CC_MAX_AGE
     )
+    dump_request(request)
 
     return response
 
