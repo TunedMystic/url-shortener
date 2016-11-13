@@ -92,6 +92,6 @@ ENV/
 # Misc
 *.sqlite3
 *.DS_Store
+.vagrant/
 misc/
 backups/
-request_logs/*.json
