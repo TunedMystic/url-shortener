@@ -24,9 +24,9 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 SECRET_KEY = 'ouh-ie27198j9vb1fx&mvyw)zjg#(y8wo5ml4=f)s46*ud0=7p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INTERNAL_IPS = ['127.0.0.1']
 
