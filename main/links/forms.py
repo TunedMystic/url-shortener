@@ -48,7 +48,6 @@ class LinkFormMixin(object):
     def clean_title(self):
         user_not_exists = not self.user or not self.user.is_authenticated
         title = self.cleaned_data.get('title')
-        # import pdb; pdb.set_trace();
 
         # If title is given and (User is None or
         # User not authenticated), raise exception.
