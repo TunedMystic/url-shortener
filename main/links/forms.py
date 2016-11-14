@@ -45,6 +45,19 @@ class LinkFormMixin(object):
             raise forms.ValidationError('Custom link is already taken!')
         return key
 
+    def clean_title(self):
+        user_not_exists = not self.user or not self.user.is_authenticated
+        title = self.cleaned_data.get('title')
+        # import pdb; pdb.set_trace();
+
+        # If title is given and (User is None or
+        # User not authenticated), raise exception.
+        if title and user_not_exists:
+            raise forms.ValidationError(
+                'Only logged in users can define a title.'
+            )
+        return title   
+
     def save(self, commit=True):
         '''
         Overrides form save method.
@@ -61,6 +74,11 @@ class LinkFormMixin(object):
         if self.user and self.user.is_authenticated:
             link.user = self.user
 
+        # Set default link title
+        if not link.title:
+            title = 'Link - {}'.format(link.key)
+            link.title = title
+
         link.save()
         return link
 
@@ -74,4 +92,4 @@ class LinkForm(LinkFormMixin, forms.ModelForm):
 class LinkEditForm(LinkFormMixin, forms.ModelForm):
     class Meta:
         model = Link
-        fields = ['destination']
+        fields = ['destination', 'title']
