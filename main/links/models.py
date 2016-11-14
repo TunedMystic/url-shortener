@@ -12,7 +12,12 @@ class Link(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(default=timezone.now)
-
+    title = models.CharField(
+        max_length=200,
+        verbose_name='Link Title',
+        help_text='The title of this link',
+        null=True
+    )
     destination = models.URLField(
         max_length=300,
         verbose_name='Destination Url',
