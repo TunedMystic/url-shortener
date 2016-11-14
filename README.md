@@ -1,2 +1,2 @@
-# URL shortener project
+# URL shortener
 ## features: users, analytics. 
