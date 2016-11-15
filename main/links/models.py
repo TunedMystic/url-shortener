@@ -12,12 +12,21 @@ class Link(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(default=timezone.now)
+    tags = models.ManyToManyField(
+        'Tag',
+        related_name='tags',
+        verbose_name='Link Tags',
+        help_text='The link\'s tags',
+        on_delete=models.PROTECT
+    )
+
     title = models.CharField(
         max_length=200,
         verbose_name='Link Title',
         help_text='The title of this link',
         null=True
     )
+
     destination = models.URLField(
         max_length=300,
         verbose_name='Destination Url',
@@ -72,3 +81,17 @@ class Link(models.Model):
 
     class Meta:
         ordering = ('created_on',)
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=80,
+        verbose_name='Tag Name',
+        help_text='Name of tag',
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('title',)
