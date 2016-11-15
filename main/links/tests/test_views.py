@@ -3,8 +3,7 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from users.models import User
-from .forms import LinkForm
-from .models import Link
+from links.models import Link
 
 
 class LinkTests(TestCase):
@@ -21,55 +20,6 @@ class LinkTests(TestCase):
         site.domain = self.site_domain
         site.name = self.site_domain
         site.save()
-
-    def test_link_form(self):
-        '''
-        Create VALID short url with LinkForm
-        with unauthenticated user.
-        '''
-
-        # Instantiate LinkForm.
-        form = LinkForm({
-            'destination': 'http://example1.com'
-        })
-
-        # Ensure that the link form is valid and save it.
-        self.assertEqual(form.is_valid(), True)
-        link = form.save()
-
-        # Ensure that the link has no associated User.
-        self.assertEqual(link.user, None)
-
-        # Create INVALID short url.
-        invalid_key = link.key
-        form = LinkForm({
-            'destination': 'http://website1.com',
-            'key': invalid_key
-        })
-
-        # Ensure that the link form is invalid. In this case, the key
-        # should already exist in the database and therefore raise an error.
-        self.assertEqual(form.is_valid(), False)
-
-    def test_link_form_user(self):
-        '''
-        Create VALID short url with LinkForm
-        with an authenticated user.
-        '''
-
-        # Get a user and instantiate LinkForm with user.
-        user = User.objects.first()
-        form = LinkForm({
-            'destination': 'http://example2.com'
-        }, user=user)
-
-        # Ensure that the Link form is valid.
-        self.assertEqual(form.is_valid(), True)
-
-        link = form.save()
-
-        # Ensure that the Link has an associated User.
-        self.assertEqual(link.user, user)
 
     def test_guest_link_post(self):
         '''
