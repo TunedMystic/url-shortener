@@ -46,6 +46,9 @@ class LinkFormMixin(object):
         return key
 
     def clean_title(self):
+        '''
+        Raise validation if title is given, but User is not given.
+        '''
         user_not_exists = not self.user or not self.user.is_authenticated
         title = self.cleaned_data.get('title')
 
@@ -55,7 +58,7 @@ class LinkFormMixin(object):
             raise forms.ValidationError(
                 'Only logged in users can define a title.'
             )
-        return title   
+        return title
 
     def save(self, commit=True):
         '''

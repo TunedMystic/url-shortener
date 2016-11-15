@@ -18,8 +18,19 @@ def index(request):
     return render(request, 'links/index.html', {'form': form, 'site': site})
 
 
+@login_required
+def dashboard(request):
+    links = Link.objects.filter(user=request.user)
+    site = Site.objects.get_current()
+    return render(
+        request,
+        'links/dashboard.html',
+        {'links': links, 'site': site}
+    )
+
+
 @require_http_methods(['POST'])
-def shorten_url(request):
+def shorten_link(request):
     form = LinkForm(
         request.POST or None,
         user=request.user
@@ -33,7 +44,25 @@ def shorten_url(request):
         return JsonResponse(errors, status=400)
 
 
-def redirect_url(request, key):
+@login_required
+def edit_link(request, key):
+    link = Link.objects.get(key=key)
+    form = LinkEditForm(
+        request.POST or None,
+        user=request.user,
+        instance=link,
+    )
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('dashboard'))
+
+    return render(request, 'links/edit_url.html', {'form': form})
+
+
+@require_http_methods(['GET'])
+def redirect_to_link(request, key):
     link = get_object_or_404(Link, key=key)
 
     # Update Link total clicks.
@@ -58,27 +87,3 @@ def redirect_url(request, key):
     )
 
     return response
-
-
-@login_required
-def dashboard(request):
-    links = Link.objects.filter(user=request.user)
-    site = Site.objects.get_current()
-    return render(
-        request,
-        'links/dashboard.html',
-        {'links': links, 'site': site}
-    )
-
-
-@login_required
-def edit_url(request, key):
-    link = Link.objects.get(key=key)
-    form = LinkEditForm(request.POST or None, instance=link)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('dashboard'))
-
-    return render(request, 'links/edit_url.html', {'form': form})

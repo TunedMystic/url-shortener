@@ -69,11 +69,11 @@ class LinkTests(TestCase):
 
     def test_guest_link_post(self):
         '''
-        Test the 'shorten-url' endpoint with VALID
+        Test the 'shorten-link' endpoint with VALID
         data from a guest User.
         '''
 
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
 
         # Prepare data and POST it.
         data = {'destination': 'http://website2.com'}
@@ -90,7 +90,7 @@ class LinkTests(TestCase):
 
     def test_user_link_post(self):
         '''
-        Test the 'shorten-url' endpoint with VALID
+        Test the 'shorten-link' endpoint with VALID
         data from a logged in User.
         '''
 
@@ -98,7 +98,7 @@ class LinkTests(TestCase):
         user = User.objects.get(email='user@email.com')
         self.client.login(email=user.email, password='user')
 
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
 
         # Prepare data and POST it.
         data = {'destination': 'http://website3.com'}
@@ -115,12 +115,12 @@ class LinkTests(TestCase):
 
     def test_domain_link(self):
         '''
-        Test the 'shorten-url' endpoint with a url
+        Test the 'shorten-link' endpoint with a url
         that has this site's domain.
 
         This test should fail with a 400 error.
         '''
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
 
         # Prepare data and POST it.
         data = {'destination': 'http://{}'.format(self.site_domain)}
@@ -131,12 +131,12 @@ class LinkTests(TestCase):
 
     def test_anon_link_key(self):
         '''
-        Test the 'shorten-url' endpoint with
+        Test the 'shorten-link' endpoint with
         a destination and key provided by an anonymous user.
 
         This test should fail with a 400 error.
         '''
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
 
         # Prepare data and POST it.
         data = {'destination': 'http://website4.com', 'key': 'w4'}
@@ -147,7 +147,7 @@ class LinkTests(TestCase):
 
     def test_user_existing_key(self):
         '''
-        Test the 'shorten-url' endpoint with
+        Test the 'shorten-link' endpoint with
         an existing key provided by a logged in user.
 
         This test should fail with a 400 error.
@@ -156,7 +156,7 @@ class LinkTests(TestCase):
         user = User.objects.get(email='user@email.com')
         self.client.login(email=user.email, password='user')
 
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
         key = 'w4'
 
         # Prepare data and POST it.
@@ -175,7 +175,7 @@ class LinkTests(TestCase):
 
     def test_redirect_status_code(self):
         '''
-        Test the 'redirect-url' endpoint for 301 status code
+        Test the 'redirect-to-link' endpoint for 301 status code
         and cache control header.
         '''
         # Get the User and Login the User.
@@ -183,7 +183,7 @@ class LinkTests(TestCase):
         self.client.login(email=user.email, password='user')
 
         # Shorten a url
-        url = reverse('shorten-url')
+        url = reverse('shorten-link')
         key = 'w5'
 
         # Prepare data and POST it.
@@ -192,7 +192,7 @@ class LinkTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Prepare redirect url and GET it.
-        url = reverse('redirect-url', kwargs={'key': key})
+        url = reverse('redirect-to-link', kwargs={'key': key})
         response = self.client.get(url)
 
         # Check the response status code and headers.

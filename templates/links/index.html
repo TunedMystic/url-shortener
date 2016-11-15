@@ -21,7 +21,7 @@ Shorten url
     <div class="container">
         <div class="row">
             <h2>Enter a URL</h2>
-            <form action="{% url 'shorten-url' %}" method="POST" id="shorten-form">
+            <form action="{% url 'shorten-link' %}" method="POST" id="shorten-form">
                 {% csrf_token %}
 
                 <div class="form-group">

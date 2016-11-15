@@ -25,8 +25,8 @@ Dashboard
                                 <input type="checkbox">
                             </td>
                             <td>
-                                <a href="{% url 'redirect-url' key=link.key %}" target="blank">
-                                    http://{{ site.domain }}{% url 'redirect-url' key=link.key %}
+                                <a href="{% url 'redirect-to-link' key=link.key %}" target="blank">
+                                    http://{{ site.domain }}{% url 'redirect-to-link' key=link.key %}
                                 </a>
                             </td>
                             <td>{{ link.destination }}</td>
