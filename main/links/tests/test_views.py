@@ -201,3 +201,29 @@ class LinkTests(TestCase):
         # Should redirect to 'dashboard' page.
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith(reverse('dashboard')))
+
+    def test_edit_forbidden_link_auth(self):
+        '''
+        Test the 'edit-link' endpoint with
+        an authorized user, trying to edit
+        another authorized user's link.
+        '''
+
+        # Get the User and Login the User.
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        # Get a link that was not created by user and user not None.
+        some_link = Link.objects.exclude(user=user).exclude(user=None).first()
+        self.assertNotEqual(user, some_link.user)
+
+        # Get link's key and reverse url.
+        key = some_link.key
+        url = reverse('edit-link', kwargs={'key': key})
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website8.com', 'title': 'website 8'}
+        response = self.client.post(url, data=data)
+
+        # Check response status.
+        self.assertEqual(response.status_code, 403)
