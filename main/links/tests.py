@@ -16,29 +16,31 @@ class LinkTests(TestCase):
         Modify the current site with the
         predefined site domain.
         '''
+
         site = Site.objects.get_current()
         site.domain = self.site_domain
         site.name = self.site_domain
         site.save()
 
     def test_link_form(self):
+        '''
+        Create VALID short url with LinkForm
+        with unauthenticated user.
+        '''
 
-        # Create VALID short url.
-        #
+        # Instantiate LinkForm.
         form = LinkForm({
             'destination': 'http://example1.com'
         })
 
-        # Ensure that the link form is valid.
+        # Ensure that the link form is valid and save it.
         self.assertEqual(form.is_valid(), True)
-
         link = form.save()
 
         # Ensure that the link has no associated User.
         self.assertEqual(link.user, None)
 
         # Create INVALID short url.
-        #
         invalid_key = link.key
         form = LinkForm({
             'destination': 'http://website1.com',
@@ -50,11 +52,13 @@ class LinkTests(TestCase):
         self.assertEqual(form.is_valid(), False)
 
     def test_link_form_user(self):
+        '''
+        Create VALID short url with LinkForm
+        with an authenticated user.
+        '''
 
+        # Get a user and instantiate LinkForm with user.
         user = User.objects.first()
-
-        # Create VALID short url.
-        #
         form = LinkForm({
             'destination': 'http://example2.com'
         }, user=user)
@@ -120,6 +124,7 @@ class LinkTests(TestCase):
 
         This test should fail with a 400 error.
         '''
+
         url = reverse('shorten-link')
 
         # Prepare data and POST it.
@@ -136,6 +141,7 @@ class LinkTests(TestCase):
 
         This test should fail with a 400 error.
         '''
+
         url = reverse('shorten-link')
 
         # Prepare data and POST it.
@@ -152,6 +158,7 @@ class LinkTests(TestCase):
 
         This test should fail with a 400 error.
         '''
+
         # Get the User and Login the User.
         user = User.objects.get(email='user@email.com')
         self.client.login(email=user.email, password='user')
@@ -178,6 +185,7 @@ class LinkTests(TestCase):
         Test the 'redirect-to-link' endpoint for 301 status code
         and cache control header.
         '''
+
         # Get the User and Login the User.
         user = User.objects.get(email='user@email.com')
         self.client.login(email=user.email, password='user')
@@ -197,5 +205,49 @@ class LinkTests(TestCase):
 
         # Check the response status code and headers.
         self.assertEqual(response.status_code, 301)
-        self.assertTrue(response.has_header('Cache-Control'), True)
-        self.assertTrue(response.has_header('Location'), True)
+        self.assertTrue(response.has_header('Cache-Control'))
+        self.assertTrue(response.has_header('Location'))
+
+    def test_edit_link_anon(self):
+        '''
+        Test the 'edit-link' endpoint with
+        an unauthorized user.
+        '''
+
+        # Get a link that has no user and reverse url.
+        some_link = Link.objects.filter(user=None).first()
+        key = some_link.key
+        url = reverse('edit-link', kwargs={'key': key})
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website6.com', 'title': 'website 6'}
+        response = self.client.post(url, data=data)
+
+        # Check response status code.
+        # Should redirect to 'login' page.
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('login')))
+
+    def test_edit_link_auth(self):
+        '''
+        Test the 'edit-link' endpoint with
+        an authorized user.
+        '''
+
+        # Get the User and Login the User.
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        # Get a link that was created by user.
+        some_link = Link.objects.filter(user=user).first()
+        key = some_link.key
+        url = reverse('edit-link', kwargs={'key': key})
+
+        # Prepare data and POST it.
+        data = {'destination': 'http://website7.com', 'title': 'website 7'}
+        response = self.client.post(url, data=data)
+
+        # Check response status code.
+        # Should redirect to 'dashboard' page.
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('dashboard')))
