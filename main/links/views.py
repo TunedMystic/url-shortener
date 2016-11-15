@@ -70,6 +70,7 @@ def dashboard(request):
         {'links': links, 'site': site}
     )
 
+
 @login_required
 def edit_url(request, key):
     link = Link.objects.get(key=key)
