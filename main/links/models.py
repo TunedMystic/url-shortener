@@ -14,10 +14,9 @@ class Link(models.Model):
     modified_on = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(
         'Tag',
-        related_name='tags',
+        related_name='links',
         verbose_name='Link Tags',
         help_text='The link\'s tags',
-        on_delete=models.PROTECT
     )
 
     title = models.CharField(
@@ -94,4 +93,4 @@ class Tag(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('name',)
