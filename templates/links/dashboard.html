@@ -12,6 +12,7 @@ Dashboard
                 <thead>
                     <tr>
                         <th data-field="state" data-checkbox="true"></th>
+                        <th>Title</th>
                         <th>Shortened Url</th>
                         <th>Destination Link</th>
                         <th>Total clicks</th>
@@ -24,6 +25,7 @@ Dashboard
                             <td class="bs-checkbox">
                                 <input type="checkbox">
                             </td>
+                            <td>{{ link.title }}</td>
                             <td>
                                 <a href="{% url 'redirect-to-link' key=link.key %}" target="blank">
                                     http://{{ site.domain }}{% url 'redirect-to-link' key=link.key %}

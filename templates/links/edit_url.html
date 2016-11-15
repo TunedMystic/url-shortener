@@ -24,15 +24,16 @@ Edit url
             <form action="." method="POST" id="shorten-form">
                 {% csrf_token %}
 
+                <h4>Title</h4>
                 <div class="form-group">
-                    {% render_field form.destination class+='form-control' placeholder+='http://' %}
+                    {% render_field form.title class+='form-control' placeholder+='custom link' %}
                 </div>
                 
-                {% if user.is_authenticated %}
+                <h4>Destination</h4>
                 <div class="form-group">
-                    {% render_field form.key class+='form-control' placeholder+='custom link' %}
+                    {% render_field form.destination class+='form-control' placeholder+='http://' %}
+                    <span>{{ form.destination.errors }}</span>
                 </div>
-                {% endif %}
 
                 <div class="display-errors">
                 </div>

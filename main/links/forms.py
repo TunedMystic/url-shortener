@@ -11,8 +11,11 @@ class LinkFormMixin(object):
         self.user = kwargs.pop('user', None)
         super(LinkFormMixin, self).__init__(*args, **kwargs)
         key_field = self.fields.get('key')
+        title_field = self.fields.get('title')
         if key_field:
             key_field.required = False
+        if title_field:
+            title_field.required = False
 
     def clean_destination(self):
         '''
