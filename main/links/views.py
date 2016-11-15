@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
+from .decorators import link_owner
 from .forms import LinkForm, LinkEditForm
 from .models import Link
 
@@ -45,6 +46,7 @@ def shorten_link(request):
 
 
 @login_required
+@link_owner
 def edit_link(request, key):
     link = Link.objects.get(key=key)
     form = LinkEditForm(
