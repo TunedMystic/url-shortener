@@ -25,6 +25,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='link',
             name='tags',
-            field=models.ManyToManyField(help_text="The link's tags", related_name='links', to='links.Tag', verbose_name='Link Tags'),
+            field=models.ManyToManyField(help_text="The tags of the link", related_name='links', to='links.Tag', verbose_name='Link Tags'),
         ),
     ]

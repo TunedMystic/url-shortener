@@ -26,13 +26,18 @@ Edit url
 
                 <div class="form-group">
                     {% render_field form.destination class+='form-control' placeholder+='http://' %}
+                    <span class="error-text">{{ form.desination.errors }}</span>
                 </div>
                 
-                {% if user.is_authenticated %}
                 <div class="form-group">
                     {% render_field form.key class+='form-control' placeholder+='custom link' %}
+                    <span class="error-text">{{ form.key.errors }}</span>
                 </div>
-                {% endif %}
+
+                <div class="form-group">
+                    {% render_field form.tags class+='form-control' placeholder+='video,cool' %}
+                    <span class="error-text">{{ form.tags.errors }}</span>
+                </div>
 
                 <div class="display-errors">
                 </div>

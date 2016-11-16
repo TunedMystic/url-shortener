@@ -16,7 +16,7 @@ class Link(models.Model):
         'Tag',
         related_name='links',
         verbose_name='Link Tags',
-        help_text='The link\'s tags',
+        help_text='The tags of the link',
     )
 
     title = models.CharField(
@@ -91,6 +91,19 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def normalize_text(cls, text):
+        tag_text = (
+            text
+            .lower()
+            .lstrip()
+            .rstrip()
+            .replace(' ', '-')
+        )
+        # If tag text is normalized to an empty
+        # string, return None instead.
+        return tag_text or None
 
     class Meta:
         ordering = ('name',)
