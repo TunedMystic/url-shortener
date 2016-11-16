@@ -62,6 +62,7 @@ class Link(models.Model):
         '''
         Generate a random string based on the Hash length and Alphabet.
         '''
+
         return ''.join(
             random.choice(settings.HASH_ALPHABET)
             for x in range(settings.HASH_LENGTH)
@@ -73,6 +74,7 @@ class Link(models.Model):
         Make random key for Link.
         Ensure uniqueness of key by querying Database.
         '''
+
         key = cls._generate_key()
         while cls.objects.filter(key=key).exists():
             key = cls._generate_key()

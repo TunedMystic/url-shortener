@@ -15,6 +15,7 @@ class LinkFormMixin(object):
         key_field = self.fields.get('key')
         title_field = self.fields.get('title')
         tags_field = self.fields.get('tags')
+
         if key_field:
             key_field.required = False
         if title_field:
@@ -28,6 +29,7 @@ class LinkFormMixin(object):
         '''
         Raise validation error if User enters a url that originates from this site.
         '''
+
         destination = self.cleaned_data.get('destination')
         url = urlparse(destination)
         site_domain = Site.objects.get_current().domain
@@ -42,6 +44,7 @@ class LinkFormMixin(object):
         Raise validation error if key is given, but User is not given.
         Raise validation error if User enters an existing key.
         '''
+
         user_not_exists = not self.user or not self.user.is_authenticated
         key = self.cleaned_data.get('key')
 
@@ -59,6 +62,7 @@ class LinkFormMixin(object):
         '''
         Raise validation error if title is given, but User is not given.
         '''
+
         user_not_exists = not self.user or not self.user.is_authenticated
         title = self.cleaned_data.get('title')
 
@@ -75,6 +79,7 @@ class LinkFormMixin(object):
         Resolve tags from an input string.
         Raise validation error if more than 8 tags.
         '''
+
         tags = self.cleaned_data.get('tags')
         if tags:
 
@@ -101,6 +106,7 @@ class LinkFormMixin(object):
         Generates key if key does not exist.
         Sets User if user is authenticated.
         '''
+
         link = super(LinkFormMixin, self).save(commit=False)
 
         # Generate random key for Link if key does not exist.

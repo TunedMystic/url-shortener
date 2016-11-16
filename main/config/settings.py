@@ -42,7 +42,7 @@ TAG_LENGTH = 8
 
 # Cache Control Headers
 
-CC_MAX_AGE = 2
+CC_MAX_AGE = 30
 
 CC_PRIVATE = True
 

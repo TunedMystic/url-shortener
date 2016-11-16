@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('links', '0003_link_title'),
+        ('links', '0004_generate_default_titles_for_titleless_links'),
     ]
 
     operations = [
