@@ -48,6 +48,13 @@ class LinkFormMixin(object):
         user_not_exists = not self.user or not self.user.is_authenticated
         key = self.cleaned_data.get('key')
 
+        # Normalize key.
+        if not Link.normalize_key(key):
+            raise forms.ValidationError(
+                'Custom key can only contain alphanumeric \
+                characters, dashes, and underscores'
+            )
+
         # If key is given and (User is None or
         # User not authenticated), raise exception.
         if key and user_not_exists:
