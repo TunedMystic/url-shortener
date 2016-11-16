@@ -1,4 +1,5 @@
 import random
+import re
 
 from django.conf import settings
 from django.db import models
@@ -67,6 +68,17 @@ class Link(models.Model):
             random.choice(settings.HASH_ALPHABET)
             for x in range(settings.HASH_LENGTH)
         )
+
+    @classmethod
+    def normalize_key(cls, key):
+        '''
+        Keys may only contain alphanumberic characters,
+        dashes, and underscores.
+        '''
+        key = re.match(r'^[\w-]+$', key)
+        if key:
+            return True
+        return False
 
     @classmethod
     def make_key(cls):
