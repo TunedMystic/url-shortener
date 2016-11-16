@@ -40,7 +40,7 @@ HASH_LENGTH = 5
 
 # Cache Control Headers
 
-CC_MAX_AGE = 2
+CC_MAX_AGE = 30
 
 CC_PRIVATE = True
 
