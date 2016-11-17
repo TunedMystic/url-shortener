@@ -80,8 +80,16 @@ class LinkFormMixin(object):
         Raise validation error if more than 8 tags.
         '''
 
+        user_not_exists = not self.user or not self.user.is_authenticated
         tags = self.cleaned_data.get('tags')
+
         if tags:
+            # If tags is given and (User is None or
+            # User not authenticated), raise exception.
+            if user_not_exists:
+                raise forms.ValidationError(
+                    'Only logged in users can define tags.'
+                )
 
             # Split and normalize text from tags input.
             tags = [Tag.normalize_text(tag) for tag in tags.split(',')]
@@ -90,9 +98,9 @@ class LinkFormMixin(object):
             tags = list(filter(lambda x: x, tags))
 
             # Raise exception if tag length exceeds limit.
-            if len(tags) > settings.TAG_LENGTH:
+            if len(tags) > settings.TAG_LIMIT:
                 raise forms.ValidationError(
-                    'Cannot have more than {} tags.'.format(settings.TAG_LENGTH)
+                    'Cannot have more than {} tags.'.format(settings.TAG_LIMIT)
                 )
 
             # Resolve Tag objects from tags list.
