@@ -19,7 +19,7 @@ urlpatterns = [
         name='shorten-link'
     ),
     url(
-        r'^edit/(?P<key>[(A-Za-z0-9)-]++)/$',
+        r'^edit/(?P<key>[(A-Za-z0-9)-]+)/$',
         views.edit_link,
         name='edit-link'
     ),
