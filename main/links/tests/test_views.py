@@ -3,7 +3,7 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from users.models import User
-from links.models import Link
+from links.models import Link, Tag
 
 
 class LinkTests(TestCase):
@@ -170,7 +170,11 @@ class LinkTests(TestCase):
         url = reverse('edit-link', kwargs={'key': key})
 
         # Prepare data and POST it.
-        data = {'destination': 'http://website6.com', 'title': 'website 6'}
+        data = {
+            'destination': 'http://website6.com',
+            'title': 'website 6',
+            'tags': 'website-6'
+        }
         response = self.client.post(url, data=data)
 
         # Check response status code.
@@ -182,6 +186,11 @@ class LinkTests(TestCase):
         '''
         Test the 'edit-link' endpoint with
         an authorized user.
+
+        Fields edited are title, destination, and tags.
+
+        (Edit tags by adding an invalid and valid tag.
+        Test that only valid tag was saved.)
         '''
 
         # Get the User and Login the User.
@@ -192,10 +201,20 @@ class LinkTests(TestCase):
         some_link = Link.objects.filter(user=user).first()
         key = some_link.key
         url = reverse('edit-link', kwargs={'key': key})
+        # Clear link's tags.
+        some_link.tags.clear()
 
         # Prepare data and POST it.
-        data = {'destination': 'http://website7.com', 'title': 'website 7'}
+        data = {
+            'destination': 'http://website7.com',
+            'title': 'website 7',
+            'tags': 'website-7, *7th_website*'
+        }
         response = self.client.post(url, data=data)
+
+        # Get updated link and assert that one Tag created.
+        updated_link = Link.objects.get(pk=some_link.pk)
+        self.assertEqual(updated_link.tags.count(), 1)
 
         # Check response status code.
         # Should redirect to 'dashboard' page.
@@ -222,8 +241,108 @@ class LinkTests(TestCase):
         url = reverse('edit-link', kwargs={'key': key})
 
         # Prepare data and POST it.
-        data = {'destination': 'http://website8.com', 'title': 'website 8'}
+        data = {
+            'destination': 'http://website8.com',
+            'title': 'website 8',
+            'tags': 'website-8, web_8'
+        }
         response = self.client.post(url, data=data)
 
         # Check response status.
         self.assertEqual(response.status_code, 403)
+
+    def test_edit_create_and_remove_tags_auth(self):
+        '''
+        Test the 'edit-link' endpoint with
+        an authorized user, trying to remove all
+        tags and save link.
+        '''
+
+        # Get the User and Login the User
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        # Get a link that was created by user.
+        some_link = Link.objects.filter(user=user).first()
+        key = some_link.key
+        url = reverse('edit-link', kwargs={'key': key})
+        # Clear link's tags.
+        some_link.tags.clear()
+
+        # Prepare data and POST it.
+        data = {
+            'destination': 'http://website9.com',
+            'title': 'website 9',
+            'tags': 'website-9, *9th_website*, website-nine'
+        }
+        response = self.client.post(url, data=data)
+
+        # Get updated link and assert that one Tag created.
+        updated_link = Link.objects.get(pk=some_link.pk)
+        self.assertEqual(updated_link.tags.count(), 2)
+
+        # Check response status code.
+        # Should redirect to 'dashboard' page.
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('dashboard')))
+
+        # Remove tags from data and post.
+        data['tags'] = ''
+        response = self.client.post(url, data=data)
+
+        # Get updated link and assert that one Tag created.
+        updated_link = Link.objects.get(pk=some_link.pk)
+        self.assertEqual(updated_link.tags.count(), 0)
+
+        # Check response status code.
+        # Should redirect to 'dashboard' page.
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('dashboard')))
+
+    def test_edit_tags_limit(self):
+        '''
+        Test the 'edit-link' endpoint with
+        an authorized user, trying to add more
+        than tag limit.
+        '''
+
+        # Get the tag_limit from settings.
+        from django.conf import settings
+        tag_limit = settings.TAG_LIMIT
+
+        # Get the User and Login the User
+        user = User.objects.get(email='user@email.com')
+        self.client.login(email=user.email, password='user')
+
+        # Get a link that was created by user.
+        some_link = Link.objects.filter(user=user).first()
+        key = some_link.key
+        url = reverse('edit-link', kwargs={'key': key})
+        # Clear link's tags.
+        some_link.tags.clear()
+
+        # Generate tags.
+        tags = ''
+        for i in range(tag_limit+1):
+            tags += 'tag {},'.format(i+1)
+
+        # Prepare data and POST it.
+        data = {
+            'destination': 'http://website10.com',
+            'title': 'website 10',
+            'tags': tags
+        }
+
+        response = self.client.post(url, data=data)
+
+        # Get updated link and assert that one Tag created.
+        updated_link = Link.objects.get(pk=some_link.pk)
+        self.assertEqual(updated_link.tags.count(), 0)
+
+        # Check response status and response text to see if
+        # error was displayed.
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'Cannot have more than {} tags.'.format(tag_limit),
+            1, 200)

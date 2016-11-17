@@ -73,13 +73,16 @@ class LinkTests(TestCase):
         '''
         Attempt to edit a link with LinkEditForm
         with unauthenticated user.
+
+        Fields edited are title, destination, and tags.
         '''
 
         # Get a link that has no User.
         some_link = Link.objects.filter(user=None).first()
         form = LinkEditForm({
             'destination': 'http://example3.com',
-            'title': 'example 3'
+            'title': 'example 3',
+            'tags': 'example-3, example_3'
         }, instance=some_link)
 
         # Assert that Link Edit form is invalid.
@@ -89,6 +92,11 @@ class LinkTests(TestCase):
         '''
         Attempt to edit a link with LinkEditForm
         with authenticated user.
+
+        Fields edited are title, destination, and tags.
+
+        (Edit tags by adding an invalid and valid tag.
+        Test that only valid tag was saved.)
         '''
 
         # Get the User and Login the User.
@@ -101,20 +109,25 @@ class LinkTests(TestCase):
         # Store link's destination and title for reference.
         destination = some_link.destination
         title = some_link.title
+        # Clear link's tags.
+        some_link.tags.clear()
 
         # Instantiate Link Edit Form with data, instance, user.
         form = LinkEditForm({
             'destination': 'http://example4.com',
-            'title': 'example 4'
+            'title': 'example 4',
+            'tags': 'example-4, new_example&*'
         }, instance=some_link, user=user)
 
         # Ensure that the Link form is valid and save it.
         self.assertEqual(form.is_valid(), True)
         link = form.save()
 
-        # Asser that link's destination and title have been changed.
+        # Assert that link's destination and title have been changed.
         self.assertNotEqual(destination, link.destination)
         self.assertNotEqual(title, link.title)
+        # Assert that one Tag created.
+        self.assertEqual(link.tags.count(), 1)
 
         # Assert that user is still same.
         self.assertEqual(link.user, user)
