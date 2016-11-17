@@ -70,15 +70,27 @@ class Link(models.Model):
         )
 
     @classmethod
-    def normalize_key(cls, key):
+    def normalize_key(cls, text):
         '''
-        Keys may only contain alphanumberic characters,
-        dashes, and underscores.
+        Keys may only contain alphanumberic characters and dashes.
         '''
-        key = re.match(r'^[\w-]+$', key)
-        if key:
-            return True
-        return False
+        key_text = re.match(r'^[(A-Za-z0-9)-]+$', text)
+        if key_text:
+            key_text = key_text.string
+        else:
+            return None
+
+        # Replace all dashes left and right of the string.
+        key_text = (
+            key_text
+            .lstrip('-')
+            .rstrip('-')
+        )
+
+        # Substitute 2 or more dashes with 1 dash.
+        key_text = re.sub(r'-{2,}', '-', key_text)
+
+        return key_text
 
     @classmethod
     def make_key(cls):

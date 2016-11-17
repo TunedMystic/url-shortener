@@ -48,13 +48,6 @@ class LinkFormMixin(object):
         user_not_exists = not self.user or not self.user.is_authenticated
         key = self.cleaned_data.get('key')
 
-        # Normalize key.
-        if not Link.normalize_key(key):
-            raise forms.ValidationError(
-                'Custom key can only contain alphanumeric \
-                characters, dashes, and underscores'
-            )
-
         # If key is given and (User is None or
         # User not authenticated), raise exception.
         if key and user_not_exists:
@@ -63,6 +56,17 @@ class LinkFormMixin(object):
         # If a key is given and an existing url has same key, raise exception.
         if key and Link.objects.filter(key=key).exists():
             raise forms.ValidationError('Custom link is already taken!')
+
+        # Normalize key. Raise validation error if a raw key
+        # was given, but a cleaned_key was not obtained.
+        # This indicates that the key is invalid.
+        cleaned_key = Link.normalize_key(key)
+        if key and not cleaned_key:
+            raise forms.ValidationError(
+                'Custom key can only contain alphanumeric '
+                'characters and dashes'
+            )
+
         return key
 
     def clean_title(self):
