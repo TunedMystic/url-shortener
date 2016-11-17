@@ -21,7 +21,7 @@ def index(request):
 
 @login_required
 def dashboard(request):
-    links = Link.objects.filter(user=request.user)
+    links = Link.objects.filter(user=request.user).order_by('-created_on')
     site = Site.objects.get_current()
     return render(
         request,
