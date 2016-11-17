@@ -10,11 +10,3 @@ sudo apt-get install -y nginx
 sudo apt-get install -y sqlite3
 sudo apt-get install -y tree
 sudo apt-get install -y screen
-
-sleep 3
-
-# Set up database user and 
-# bash /home/vagrant/devbox/bootstrap-db.sh
-
-# Create logs directory for django (this depends on the environment).
-# sudo mkdir /vagrant/logs/
