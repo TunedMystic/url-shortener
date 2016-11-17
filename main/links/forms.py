@@ -67,7 +67,7 @@ class LinkFormMixin(object):
                 'characters and dashes'
             )
 
-        return key
+        return cleaned_key
 
     def clean_title(self):
         '''
