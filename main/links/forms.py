@@ -122,15 +122,18 @@ class LinkFormMixin(object):
             title = 'Link - {}'.format(link.key)
             link.title = title
 
-        tags = self.cleaned_data.get('tags')
-        if tags:
-            # Clear existing tags.
-            link.tags.clear()
+        link.save()
 
+        # Get tags to update link tags.
+        tags = self.cleaned_data.get('tags')
+
+        # Clear existing tags.
+        link.tags.clear()
+
+        if tags:
             # Add tags to link.
             link.tags.add(*tags)
 
-        link.save()
         return link
 
 
