@@ -146,8 +146,18 @@ class LinkFormMixin(object):
         # Get tags to update link tags.
         tags = self.cleaned_data.get('tags')
 
+        # Get tags before saving edit and
+        # tags that were just entered.
+        old_tags = set(link.tags.all())
+        new_tags = set(tags)
+
         # Clear existing tags.
         link.tags.clear()
+
+        # Remove cleared tags that have no m2m to links.
+        for tag in old_tags.difference(new_tags):
+            if not Tag.objects.get(pk=tag.pk).links.exists():
+                Tag.objects.get(pk=tag.pk).delete()
 
         if tags:
             # Add tags to link.
