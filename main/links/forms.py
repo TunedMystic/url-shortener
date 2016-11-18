@@ -156,8 +156,8 @@ class LinkFormMixin(object):
 
         # Remove cleared tags that have no m2m to links.
         for tag in old_tags.difference(new_tags):
-            if not Tag.objects.get(pk=tag.pk).links.exists():
-                Tag.objects.get(pk=tag.pk).delete()
+            if not tag.links.exists():
+                tag.delete()
 
         if tags:
             # Add tags to link.
