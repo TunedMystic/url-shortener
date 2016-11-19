@@ -3,7 +3,7 @@ from django.test import TestCase
 from links.models import Tag
 
 
-class UtilsTests(TestCase):
+class TagUtilsTest(TestCase):
     def test_one_whitespace_string(self):
         '''
         Test normalize_text method with
