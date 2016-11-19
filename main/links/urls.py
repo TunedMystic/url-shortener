@@ -19,12 +19,12 @@ urlpatterns = [
         name='shorten-link'
     ),
     url(
-        r'^edit/(?P<key>[(A-Za-z0-9)-]+)/$',
+        r'^edit/(?P<key>[A-Za-z0-9-]+)/$',
         views.edit_link,
         name='edit-link'
     ),
     url(
-        r'^(?P<key>[(A-Za-z0-9)-]+)/$',
+        r'^(?P<key>[A-Za-z0-9-]+)/$',
         views.redirect_to_link,
         name='redirect-to-link'
     ),

@@ -64,6 +64,8 @@ class TagUtilsTest(TestCase):
         text5 = Tag.normalize_text('Total is $2.99')
         text6 = Tag.normalize_text('tag_name_')
         text7 = Tag.normalize_text('. . .')
+        text8 = Link.normalize_key('(')
+        text9 = Link.normalize_key(')')
 
         self.assertEqual(text1, None)
         self.assertEqual(text2, None)
@@ -72,6 +74,8 @@ class TagUtilsTest(TestCase):
         self.assertEqual(text5, None)
         self.assertEqual(text6, None)
         self.assertEqual(text7, None)
+        self.assertEqual(text8, None)
+        self.assertEqual(text9, None)
 
     def test_spaces_inbetween_string(self):
         '''
@@ -178,6 +182,8 @@ class LinkUtilsTest(TestCase):
         text6 = Link.normalize_key('tag_name_')
         text7 = Link.normalize_key('. . .')
         text8 = Link.normalize_key('abc123%')
+        text9 = Link.normalize_key('(')
+        text10 = Link.normalize_key(')')
 
         self.assertEqual(text1, None)
         self.assertEqual(text2, None)
@@ -187,6 +193,8 @@ class LinkUtilsTest(TestCase):
         self.assertEqual(text6, None)
         self.assertEqual(text7, None)
         self.assertEqual(text8, None)
+        self.assertEqual(text9, None)
+        self.assertEqual(text10, None)
 
     def test_spaces_inbetween_string(self):
         '''

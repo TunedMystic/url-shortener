@@ -75,7 +75,7 @@ class Link(models.Model):
         Keys may only contain alphanumberic characters and dashes.
         '''
 
-        key_text = re.match(r'^[(A-Za-z0-9)-]+$', text)
+        key_text = re.match(r'^[A-Za-z0-9-]+$', text)
         if key_text:
             key_text = key_text.string
         else:
@@ -123,7 +123,7 @@ class Tag(models.Model):
     def normalize_text(cls, text):
         # Match text with regular expression to make sure
         # string contains only alphanumberic or '-' characters.
-        tag_text = re.match(r'^[(A-Za-z0-9)\s-]+$', text)
+        tag_text = re.match(r'^[A-Za-z0-9\s-]+$', text)
 
         # If tag text is a <re Match> object, use
         # matched string, else return None.
