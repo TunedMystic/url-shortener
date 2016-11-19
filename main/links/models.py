@@ -74,6 +74,7 @@ class Link(models.Model):
         '''
         Keys may only contain alphanumberic characters and dashes.
         '''
+
         key_text = re.match(r'^[(A-Za-z0-9)-]+$', text)
         if key_text:
             key_text = key_text.string
@@ -90,7 +91,7 @@ class Link(models.Model):
         # Substitute 2 or more dashes with 1 dash.
         key_text = re.sub(r'-{2,}', '-', key_text)
 
-        return key_text
+        return key_text if key_text else None
 
     @classmethod
     def make_key(cls):
