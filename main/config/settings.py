@@ -37,7 +37,7 @@ HASH_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
 HASH_LENGTH = 5
 
-TAG_LENGTH = 8
+TAG_LIMIT = 8
 
 
 # Cache Control Headers

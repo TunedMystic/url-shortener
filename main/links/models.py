@@ -1,4 +1,5 @@
 import random
+import re
 
 from django.conf import settings
 from django.db import models
@@ -69,6 +70,30 @@ class Link(models.Model):
         )
 
     @classmethod
+    def normalize_key(cls, text):
+        '''
+        Keys may only contain alphanumberic characters and dashes.
+        '''
+
+        key_text = re.match(r'^[A-Za-z0-9-]+$', text)
+        if key_text:
+            key_text = key_text.string
+        else:
+            return None
+
+        # Replace all dashes left and right of the string.
+        key_text = (
+            key_text
+            .lstrip('-')
+            .rstrip('-')
+        )
+
+        # Substitute 2 or more dashes with 1 dash.
+        key_text = re.sub(r'-{2,}', '-', key_text)
+
+        return key_text if key_text else None
+
+    @classmethod
     def make_key(cls):
         '''
         Make random key for Link.
@@ -96,16 +121,44 @@ class Tag(models.Model):
 
     @classmethod
     def normalize_text(cls, text):
+        # Match text with regular expression to make sure
+        # string contains only alphanumberic or '-' characters.
+        tag_text = re.match(r'^[A-Za-z0-9\s-]+$', text)
+
+        # If tag text is a <re Match> object, use
+        # matched string, else return None.
+        if tag_text:
+            tag_text = tag_text.string
+        else:
+            return None
+
+        # Lower all characters.
+        # Remove all whitespaces left and right of string.
+        # Replace whitespaces with '-'.
         tag_text = (
             text
             .lower()
             .lstrip()
             .rstrip()
-            .replace(' ', '-')
         )
-        # If tag text is normalized to an empty
-        # string, return None instead.
-        return tag_text or None
+
+        # Substitute 2 or more whitespaces with 1 whitespace.
+        tag_text = re.sub(r'\s{2,}', ' ', tag_text)
+
+        # Replace whitespaces with dashes.
+        tag_text = tag_text.replace(' ', '-')
+
+        # Substitute 2 or more dashes with 1 dash.
+        tag_text = re.sub(r'-{2,}', '-', tag_text)
+
+        # Replace all dashes left and right of the string.
+        tag_text = (
+            tag_text
+            .lstrip('-')
+            .rstrip('-')
+        )
+
+        return tag_text
 
     class Meta:
         ordering = ('name',)

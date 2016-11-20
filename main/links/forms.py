@@ -56,7 +56,18 @@ class LinkFormMixin(object):
         # If a key is given and an existing url has same key, raise exception.
         if key and Link.objects.filter(key=key).exists():
             raise forms.ValidationError('Custom link is already taken!')
-        return key
+
+        # Normalize key. Raise validation error if a raw key
+        # was given, but a cleaned_key was not obtained.
+        # This indicates that the key is invalid.
+        cleaned_key = Link.normalize_key(key)
+        if key and not cleaned_key:
+            raise forms.ValidationError(
+                'Custom key can only contain alphanumeric '
+                'characters and dashes'
+            )
+
+        return cleaned_key
 
     def clean_title(self):
         '''
@@ -80,8 +91,16 @@ class LinkFormMixin(object):
         Raise validation error if more than 8 tags.
         '''
 
+        user_not_exists = not self.user or not self.user.is_authenticated
         tags = self.cleaned_data.get('tags')
+
         if tags:
+            # If tags is given and (User is None or
+            # User not authenticated), raise exception.
+            if user_not_exists:
+                raise forms.ValidationError(
+                    'Only logged in users can define tags.'
+                )
 
             # Split and normalize text from tags input.
             tags = [Tag.normalize_text(tag) for tag in tags.split(',')]
@@ -90,9 +109,9 @@ class LinkFormMixin(object):
             tags = list(filter(lambda x: x, tags))
 
             # Raise exception if tag length exceeds limit.
-            if len(tags) > settings.TAG_LENGTH:
+            if len(tags) > settings.TAG_LIMIT:
                 raise forms.ValidationError(
-                    'Cannot have more than {} tags.'.format(settings.TAG_LENGTH)
+                    'Cannot have more than {} tags.'.format(settings.TAG_LIMIT)
                 )
 
             # Resolve Tag objects from tags list.
@@ -122,15 +141,31 @@ class LinkFormMixin(object):
             title = 'Link - {}'.format(link.key)
             link.title = title
 
+        link.save()
+
+        # Get tags to update link tags.
         tags = self.cleaned_data.get('tags')
-        if tags:
+
+        # If form had tag field
+        if tags is not None:
+
+            # Get tags before saving edit and
+            # tags that were just entered.
+            old_tags = set(link.tags.all())
+            new_tags = set(tags)
+
             # Clear existing tags.
             link.tags.clear()
 
-            # Add tags to link.
-            link.tags.add(*tags)
+            # Remove cleared tags that have no m2m to links.
+            for tag in old_tags.difference(new_tags):
+                if not tag.links.exists():
+                    tag.delete()
 
-        link.save()
+            if tags:
+                # Add tags to link.
+                link.tags.add(*tags)
+
         return link
 
 
