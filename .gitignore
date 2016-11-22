@@ -95,3 +95,6 @@ ENV/
 .vagrant/
 misc/
 backups/
+logs/
+ssl/
+static/
