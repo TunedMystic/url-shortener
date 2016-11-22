@@ -9,16 +9,18 @@ SITE_CONF="$SITE_NAME.conf"
 
 # Get absolute path of the script.
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
+ROOT_PATH=$( cd "$(dirname "${PARENT_PATH}")" ; pwd -P )
+NGINX_PATH="$ROOT_PATH/etc/nginx"
 
 # Copy Nginx config file.
-sudo cp "$PARENT_PATH/$NGINX_CONF" /etc/nginx/
+sudo cp "$NGINX_PATH/$NGINX_CONF" /etc/nginx/
 
 # Remove content from sites-enabled and sites-available.
 sudo rm /etc/nginx/sites-available/*
 sudo rm /etc/nginx/sites-enabled/*
 
 # Copy site config and create symlink.
-sudo cp "$PARENT_PATH/$SITE_CONF" "/etc/nginx/sites-available/$SITE_CONF"
+sudo cp "$NGINX_PATH/$SITE_CONF" "/etc/nginx/sites-available/$SITE_CONF"
 sudo ln -s "/etc/nginx/sites-available/$SITE_CONF" "/etc/nginx/sites-enabled/$SITE_NAME"
 
 echo "** Starting Nginx..."
