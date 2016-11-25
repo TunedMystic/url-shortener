@@ -132,7 +132,7 @@ class LinkTests(TestCase):
         # Assert that user is still same.
         self.assertEqual(link.user, user)
 
-    def test_remove_stale_links_1(self):
+    def test_remove_stale_tags_1(self):
         '''
         Attempt to edit a link with LinkEditForm
         with authenticated user.
@@ -194,7 +194,7 @@ class LinkTests(TestCase):
         with self.assertRaises(Tag.DoesNotExist):
             Tag.objects.get(name=tag1.name).exists()
 
-    def remove_stale_links_2(self):
+    def remove_stale_tags_2(self):
         '''
         Attempt to edit two links with LinkEditForm
         with authenticated user.
