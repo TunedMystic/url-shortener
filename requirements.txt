@@ -3,5 +3,6 @@ django-debug-toolbar==1.6
 django-hijack==2.1.2
 django-import-export==0.5.1
 django-widget-tweaks==1.4.1
+django-ipware==1.1.6
 gunicorn==19.6.0
 geoip2==2.4.1
