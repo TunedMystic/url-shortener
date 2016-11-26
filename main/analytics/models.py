@@ -15,6 +15,7 @@ class IPAddress(models.Model):
     link = models.ForeignKey(
         Link,
         related_name='addresses',
+        verbose_name='Link',
         on_delete=models.CASCADE
     )
 
@@ -29,21 +30,20 @@ class Referer(models.Model):
         Link,
         related_name='referers',
         verbose_name='Link',
-        help_text="A link's referer",
         on_delete=models.CASCADE
     )
 
     source = models.CharField(
         max_length=80,
         verbose_name='Referer source',
-        help_text='The referer for the link',
+        help_text='The source of the referer',
         blank=True
     )
 
-    clicks = models.PositiveIntegerField(
+    total_clicks = models.PositiveIntegerField(
         default=0,
         verbose_name='Total referer clicks',
-        help_text='The total clicks from this referer'
+        help_text='The total clicks for this referer'
     )
 
     last_visited = models.DateTimeField(default=timezone.now)

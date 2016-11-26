@@ -20,10 +20,10 @@ class Migration(migrations.Migration):
             name='Referer',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source', models.CharField(blank=True, help_text='The referer for the link', max_length=80, verbose_name='Referer source')),
-                ('clicks', models.PositiveIntegerField(default=0, help_text='The total clicks from this referer', verbose_name='Total referer clicks')),
+                ('source', models.CharField(blank=True, help_text='The source of the referer', max_length=80, verbose_name='Referer source')),
+                ('total_clicks', models.PositiveIntegerField(default=0, help_text='The total clicks for this referer', verbose_name='Total referer clicks')),
                 ('last_visited', models.DateTimeField(default=django.utils.timezone.now)),
-                ('link', models.ForeignKey(help_text="A link's referer", on_delete=django.db.models.deletion.CASCADE, related_name='referers', to='links.Link', verbose_name='Link')),
+                ('link', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='referers', to='links.Link', verbose_name='Link')),
             ],
         ),
     ]

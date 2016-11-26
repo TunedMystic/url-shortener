@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('address', models.GenericIPAddressField()),
-                ('link', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='links.Link')),
+                ('link', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='links.Link', verbose_name='Link')),
             ],
         ),
     ]
