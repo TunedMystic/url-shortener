@@ -52,6 +52,11 @@ CC_PRIVATE = True
 REQUEST_LOG_DIR = 'request_logs'
 
 
+# GeoIP Path
+
+GEOIP_PATH = os.path.join(ROOT_DIR, 'geo_ip')
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,9 +74,10 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'import_export',
     'widget_tweaks',
+    'hijack',
 
     # Project apps.
-    'hijack',
+    'config',
     'users',
     'links',
 ]

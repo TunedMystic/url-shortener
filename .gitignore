@@ -98,3 +98,4 @@ backups/
 logs/
 ssl/
 static/
+geo_ip/

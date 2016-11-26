@@ -4,3 +4,4 @@ django-hijack==2.1.2
 django-import-export==0.5.1
 django-widget-tweaks==1.4.1
 gunicorn==19.6.0
+geoip2==2.4.1
