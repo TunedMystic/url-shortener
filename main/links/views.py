@@ -5,12 +5,14 @@ from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.template.loader import get_template
+from django.utils import timezone
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
 from .decorators import link_owner
 from .forms import LinkForm, LinkEditForm
 from .models import Link
+from analytics.models import Referer
 
 
 def index(request):
@@ -66,6 +68,28 @@ def edit_link(request, key):
 @require_http_methods(['GET'])
 def redirect_to_link(request, key):
     link = get_object_or_404(Link, key=key)
+
+    # Get referer from request META object.
+    referer_source = request.META.get('HTTP_REFERER', '')
+
+    # If referer exists, normalize.
+    if referer_source:
+        referer_source = Referer.normalize_source(referer_source)
+
+    # Get or create Referer object from kwargs.
+    referer, created = Referer.objects.get_or_create(
+        link=link,
+        source=referer_source
+    )
+
+    # Update last visited for this referer.
+    referer.last_visited = timezone.now()
+
+    # Increment clicks for this referer.
+    referer.clicks = F('clicks') + 1
+
+    # Save Referer object.
+    referer.save()
 
     # Update Link total clicks.
     link.total_clicks = F('total_clicks') + 1
