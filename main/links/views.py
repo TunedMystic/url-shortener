@@ -89,7 +89,7 @@ def redirect_to_link(request, key):
     referer.last_visited = timezone.now()
 
     # Increment clicks for this referer.
-    referer.clicks = F('total_clicks') + 1
+    referer.total_clicks = F('total_clicks') + 1
 
     # Save Referer object.
     referer.save()
