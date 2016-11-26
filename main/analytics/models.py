@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from django.db import models
 from django.utils import timezone
 
@@ -30,3 +32,11 @@ class Referer(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def normalize_source(self, url):
+        '''
+        Return hostname (including subdomains) of url.
+        '''
+        url = urlparse(url)
+        return url.hostname
