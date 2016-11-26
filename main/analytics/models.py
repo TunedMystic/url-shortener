@@ -39,6 +39,4 @@ class Referer(models.Model):
         Return hostname (including subdomains) of url.
         '''
         url = urlparse(url)
-        if not url.hostname:
-            return url.path
-        return url.hostname
+        return url.hostname or url.path
