@@ -31,10 +31,10 @@ class Referer(models.Model):
     last_visited = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.name
+        return self.source
 
     @staticmethod
-    def normalize_source(self, url):
+    def normalize_source(url):
         '''
         Return hostname (including subdomains) of url.
         '''
