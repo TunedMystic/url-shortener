@@ -1,12 +1,21 @@
 from django.db import models
+from django.utils import timezone
 
 from links.models import Link
 
 
 class Referer(models.Model):
-    name = models.CharField(
+    link = models.ForeignKey(
+        Link,
+        related_name='referers',
+        verbose_name='Referer',
+        help_text="A link's referer",
+        on_delete=models.CASCADE
+    )
+
+    source = models.CharField(
         max_length=80,
-        verbose_name='Referer name',
+        verbose_name='Referer source',
         help_text='The referer for the link',
         blank=True
     )
@@ -17,15 +26,7 @@ class Referer(models.Model):
         help_text='The total clicks from this referer'
     )
 
-    last_visited = models.DateTimeField(auto_now=True)
-
-    link = models.ForeignKey(
-        Link,
-        related_name='referers',
-        verbose_name='Referer',
-        help_text='A link\'s referer',
-        on_delete=models.CASCADE
-    )
+    last_visited = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
