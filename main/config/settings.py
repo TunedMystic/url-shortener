@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'config',
     'users',
     'links',
+    'analytics',
 ]
 
 # Custom user model
