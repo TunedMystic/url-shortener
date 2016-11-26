@@ -66,6 +66,13 @@ class Link(models.Model):
             self.addresses.update_or_create(address=ip_address)
 
     @staticmethod
+    def unique_clicks(self):
+        '''
+        Return the total number of unique addresses that visited the Link.
+        '''
+        return self.addresses.count()
+
+    @staticmethod
     def _generate_key():
         '''
         Generate a random string based on the Hash length and Alphabet.
