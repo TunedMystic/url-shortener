@@ -28,7 +28,7 @@ class Referer(models.Model):
     link = models.ForeignKey(
         Link,
         related_name='referers',
-        verbose_name='Referer',
+        verbose_name='Link',
         help_text="A link's referer",
         on_delete=models.CASCADE
     )

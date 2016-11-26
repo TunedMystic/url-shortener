@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('source', models.CharField(blank=True, help_text='The referer for the link', max_length=80, verbose_name='Referer source')),
                 ('clicks', models.PositiveIntegerField(default=0, help_text='The total clicks from this referer', verbose_name='Total referer clicks')),
                 ('last_visited', models.DateTimeField(default=django.utils.timezone.now)),
-                ('link', models.ForeignKey(help_text="A link's referer", on_delete=django.db.models.deletion.CASCADE, related_name='referers', to='links.Link', verbose_name='Referer')),
+                ('link', models.ForeignKey(help_text="A link's referer", on_delete=django.db.models.deletion.CASCADE, related_name='referers', to='links.Link', verbose_name='Link')),
             ],
         ),
     ]
