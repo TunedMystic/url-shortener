@@ -65,7 +65,7 @@ class Link(models.Model):
         if ip_address:
             self.addresses.update_or_create(address=ip_address)
 
-    @staticmethod
+    @property
     def unique_clicks(self):
         '''
         Return the total number of unique addresses that visited the Link.
