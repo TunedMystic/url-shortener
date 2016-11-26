@@ -58,6 +58,13 @@ class Link(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.key, self.destination[:20])
 
+    def add_unique_ip(self, ip_address=None):
+        '''
+        Update Unique IP Address for the Link.
+        '''
+        if ip_address:
+            self.addresses.update_or_create(address=ip_address)
+
     @staticmethod
     def _generate_key():
         '''
@@ -68,6 +75,18 @@ class Link(models.Model):
             random.choice(settings.HASH_ALPHABET)
             for x in range(settings.HASH_LENGTH)
         )
+
+    @classmethod
+    def make_key(cls):
+        '''
+        Make random key for Link.
+        Ensure uniqueness of key by querying Database.
+        '''
+
+        key = cls._generate_key()
+        while cls.objects.filter(key=key).exists():
+            key = cls._generate_key()
+        return key
 
     @classmethod
     def normalize_key(cls, text):
@@ -92,18 +111,6 @@ class Link(models.Model):
         key_text = re.sub(r'-{2,}', '-', key_text)
 
         return key_text if key_text else None
-
-    @classmethod
-    def make_key(cls):
-        '''
-        Make random key for Link.
-        Ensure uniqueness of key by querying Database.
-        '''
-
-        key = cls._generate_key()
-        while cls.objects.filter(key=key).exists():
-            key = cls._generate_key()
-        return key
 
     class Meta:
         ordering = ('created_on',)

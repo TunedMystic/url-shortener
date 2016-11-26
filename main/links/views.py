@@ -8,6 +8,8 @@ from django.template.loader import get_template
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
+from ipware.ip import get_ip
+
 from .decorators import link_owner
 from .forms import LinkForm, LinkEditForm
 from .models import Link
@@ -66,10 +68,14 @@ def edit_link(request, key):
 @require_http_methods(['GET'])
 def redirect_to_link(request, key):
     link = get_object_or_404(Link, key=key)
+    ip_address = get_ip(request)
 
     # Update Link total clicks.
     link.total_clicks = F('total_clicks') + 1
     link.save()
+
+    # Update Unique IP addresses.
+    link.add_unique_ip(ip_address)
 
     # Prepare template response.
     template = get_template('links/redirect.html')
