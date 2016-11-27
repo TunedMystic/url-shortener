@@ -24,7 +24,7 @@ class Link(models.Model):
         max_length=200,
         verbose_name='Link Title',
         help_text='The title of this link',
-        null=True
+        blank=True
     )
 
     destination = models.URLField(

@@ -33,6 +33,7 @@ if __name__ == '__main__':
     # Import models.
     from users.models import *
     from links.models import *
+    from analytics.models import *
 
     # Easy model functions.
     uu = lambda: User.objects.all()

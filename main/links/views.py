@@ -108,6 +108,8 @@ def redirect_to_link(request, key):
     # If referer exists, normalize.
     if referer_source:
         referer_source = Referer.normalize_source(referer_source)
+        if referer_source == Site.objects.get_current().domain:
+            referer_source = ''
 
     # Get or create Referer object.
     referer, created = Referer.objects.get_or_create(
