@@ -58,3 +58,49 @@ class Referer(models.Model):
         '''
         url = urlparse(url)
         return url.hostname or url.path
+
+
+class Country(models.Model):
+    name = models.CharField(
+        max_length=120,
+        verbose_name='Country name',
+        help_text='Country name',
+    )
+
+    code = models.CharField(
+        max_length=5,
+        verbose_name='Country code',
+        help_text='Country code',
+    )
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.code)
+
+
+class Region(models.Model):
+    link = models.ForeignKey(
+        Link,
+        related_name='regions',
+        verbose_name='Link',
+        on_delete=models.CASCADE
+    )
+
+    country = models.ForeignKey(
+        Country,
+        related_name='regions',
+        verbose_name='Country',
+        blank=True,
+        null=True
+    )
+
+    total_clicks = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Total region clicks',
+        help_text='The total clicks for this region'
+    )
+
+    last_visited = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        country_code = self.country.code if self.country else 'N/A'
+        return '{} ({})'.format(self.link.key, country_code)

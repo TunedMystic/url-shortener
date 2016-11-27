@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.gis.geoip2 import GeoIP2
 from django.contrib.sites.models import Site
 from django.db.models import F
 from django.http import JsonResponse, HttpResponse
@@ -9,12 +10,13 @@ from django.utils import timezone
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
+import geoip2
 from ipware.ip import get_ip
 
 from .decorators import link_owner
 from .forms import LinkForm, LinkEditForm
 from .models import Link
-from analytics.models import Referer
+from analytics.models import Country, Region, Referer
 
 
 def index(request):
@@ -72,6 +74,34 @@ def redirect_to_link(request, key):
     link = get_object_or_404(Link, key=key)
     ip_address = get_ip(request)
 
+    # Initialize GeoIP object.
+    g = GeoIP2()
+    country = None
+
+    # Attempt to get country for ip address.
+    try:
+        data = g.country(ip_address)
+        country = data.get('country_name')
+        code = data.get('country_code')
+
+        # Get or create country if country does not exist.
+        if country:
+            country, created = Country.objects.get_or_create(
+                name=country,
+                code=code
+            )
+
+    except geoip2.errors.AddressNotFoundError:
+        pass
+
+    # Get or create Region object, where country is either an object or None.
+    region, created = Region.objects.get_or_create(link=link, country=country)
+
+    # Update last visited, clicks, and save changes.
+    region.last_visited = timezone.now()
+    region.total_clicks = F('total_clicks') + 1
+    region.save()
+
     # Get referer from request META object.
     referer_source = request.META.get('HTTP_REFERER', '')
 
@@ -79,19 +109,15 @@ def redirect_to_link(request, key):
     if referer_source:
         referer_source = Referer.normalize_source(referer_source)
 
-    # Get or create Referer object from kwargs.
+    # Get or create Referer object.
     referer, created = Referer.objects.get_or_create(
         link=link,
         source=referer_source
     )
 
-    # Update last visited for this referer.
+    # Update last visited, clicks, and save changes.
     referer.last_visited = timezone.now()
-
-    # Increment clicks for this referer.
     referer.total_clicks = F('total_clicks') + 1
-
-    # Save Referer object.
     referer.save()
 
     # Update Link total clicks.
