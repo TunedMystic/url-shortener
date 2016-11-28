@@ -3,6 +3,7 @@ import re
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 
 
@@ -39,12 +40,6 @@ class Link(models.Model):
         help_text='The unique identifier for the link'
     )
 
-    total_clicks = models.PositiveIntegerField(
-        default=0,
-        verbose_name='Total clicks',
-        help_text='The total clicks on this link'
-    )
-
     user = models.ForeignKey(
         'users.User',
         related_name='links',
@@ -64,6 +59,14 @@ class Link(models.Model):
         '''
         if ip_address:
             self.addresses.update_or_create(address=ip_address)
+
+    @property
+    def total_clicks(self):
+        '''
+        Return sum of all region's total clicks.
+        '''
+        sum_data = self.regions.aggregate(Sum('total_clicks'))
+        return sum_data['total_link_sum']
 
     @property
     def unique_clicks(self):
