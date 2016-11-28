@@ -66,7 +66,8 @@ class Link(models.Model):
         Return sum of all region's total clicks.
         '''
         sum_data = self.regions.aggregate(Sum('total_clicks'))
-        return sum_data['total_link_sum']
+        total_clicks = sum_data['total_clicks__sum']
+        return total_clicks if total_clicks else 0
 
     @property
     def unique_clicks(self):

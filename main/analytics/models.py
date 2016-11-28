@@ -49,7 +49,7 @@ class Referer(models.Model):
     last_visited = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.source
+        return '{}'.format(self.source if self.source else 'N/A')
 
     @staticmethod
     def normalize_source(url):

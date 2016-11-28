@@ -1,22 +1,22 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.gis.geoip2 import GeoIP2
 from django.contrib.sites.models import Site
-from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.template.loader import get_template
-from django.utils import timezone
 from django.utils.cache import patch_cache_control
 from django.views.decorators.http import require_http_methods
 
-import geoip2
 from ipware.ip import get_ip
 
 from .decorators import link_owner
 from .forms import LinkForm, LinkEditForm
 from .models import Link
-from analytics.models import Country, Region, Referer
+from .utils import (
+    update_link_unique_ips,
+    update_link_referers,
+    update_link_regions
+)
 
 
 def index(request):
@@ -72,62 +72,19 @@ def edit_link(request, key):
 @require_http_methods(['GET'])
 def redirect_to_link(request, key):
     link = get_object_or_404(Link, key=key)
+
+    # Get data from request.
     ip_address = get_ip(request)
-
-    # Initialize GeoIP object.
-    g = GeoIP2()
-    country = None
-
-    # Attempt to get country for ip address.
-    try:
-        data = g.country(ip_address)
-        country = data.get('country_name')
-        code = data.get('country_code')
-
-        # Get or create country if country does not exist.
-        if country:
-            country, created = Country.objects.get_or_create(
-                name=country,
-                code=code
-            )
-
-    except geoip2.errors.AddressNotFoundError:
-        pass
-
-    # Get or create Region object, where country is either an object or None.
-    region, created = Region.objects.get_or_create(link=link, country=country)
-
-    # Update last visited, clicks, and save changes.
-    region.last_visited = timezone.now()
-    region.total_clicks = F('total_clicks') + 1
-    region.save()
-
-    # Get referer from request META object.
     referer_source = request.META.get('HTTP_REFERER', '')
 
-    # If referer exists, normalize.
-    if referer_source:
-        referer_source = Referer.normalize_source(referer_source)
-        if referer_source == Site.objects.get_current().domain:
-            referer_source = ''
+    # Update Unique IP Addresses.
+    update_link_unique_ips(link, ip_address)
 
-    # Get or create Referer object.
-    referer, created = Referer.objects.get_or_create(
-        link=link,
-        source=referer_source
-    )
+    # Update Regions.
+    update_link_regions(link, ip_address)
 
-    # Update last visited, clicks, and save changes.
-    referer.last_visited = timezone.now()
-    referer.total_clicks = F('total_clicks') + 1
-    referer.save()
-
-    # Update Link total clicks.
-    link.total_clicks = F('total_clicks') + 1
-    link.save()
-
-    # Update Unique IP addresses.
-    link.add_unique_ip(ip_address)
+    # Update Referers.
+    update_link_referers(link, referer_source)
 
     # Prepare template response.
     template = get_template('links/redirect.html')
