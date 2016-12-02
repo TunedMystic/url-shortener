@@ -1,38 +1,56 @@
-{% extends 'base/base.html' %}
+{% extends 'base/login_signup_base.html' %}
+{% load static from staticfiles %}
 {% load widget_tweaks %}
 
-{% block title %}Login{% endblock title %}
+{% block title %}
+Url Shortener - Sign In
+{% endblock title %}
 
 {% block styles %}
 <style>
-    .error-text {
-        color: red;
-    }
-    input {
-        font-size: 20px;
-        margin-bottom: 10px;
+    .error {
+        color: #fa424a;
     }
 </style>
 {% endblock styles %}
 
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
+    <form class="sign-box" method="POST">
+        {% csrf_token %}
 
-    {% if form.errors %}
-    <div class="error-text">
-        The username/password you entered was wrong.
-    </div>
-    {% endif %}
+        <div class="sign-avatar">
+            <img src="{% static 'img/avatar-sign.png' %}" alt="">
+        </div>
 
-    {{ form.username.label_tag }}
-    {% render_field form.username placeholder="Username" %}
-    <br />
+        <header class="sign-title">Sign In</header>
 
-    {{ form.password.label_tag }}
-    {% render_field form.password placeholder="Password" %}
+        <div class="form-group {% if form.email.errors %}error{% endif %}">
+            {% render_field form.username class+='form-control' placeholder="E-mail" %}
+            {{ form.email.errors }}
+        </div>
 
-    <br />
-    <input type="submit" value="Login" />
-</form>
+        <div class="form-group {% if form.password1.errors %}error{% endif %}">
+            {% render_field form.password class+='form-control' placeholder="Password" %}
+            {{ form.password1.errors }}
+        </div>
+
+        <div class="form-group error">
+            <div class="float-right reset">
+                <a href="reset-password.html">Reset Password</a>
+            </div>
+        </div>
+
+        {% if form.errors %}
+            <div class='error-list error'>
+                    Wrong email and password.
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-rounded">Sign in</button>
+
+        <p class="sign-note">New to our website? <a href="{% url 'signup' %}">Sign up</a></p>
+        <!--<button type="button" class="close">
+            <span aria-hidden="true">&times;</span>
+        </button>-->
+    </form>
 {% endblock content %}
